@@ -13,23 +13,25 @@ typedef struct
 	Node* firstItem;
 	Node* lastItem;
 	unsigned int size;
-} List;
+} DoublyLinkedList;
 
 
-extern List* createNewList();
+extern DoublyLinkedList* createNewList();
 
 extern Node* createNewNode();
 
-extern void addItem(List* list, void* object);
+extern void addItem(DoublyLinkedList* list, void* object);
 
-extern Node* getAt(List* list, unsigned int pos);
+extern Node* getAt(DoublyLinkedList* list, unsigned int pos);
 
-extern void removeAt(List* list, unsigned int pos);
+extern void removeAt(DoublyLinkedList* list, unsigned int pos);
 
-extern void print(List* list);
+extern void print(DoublyLinkedList* list);
 
-extern Node* getLastNode(List* list);
+extern Node* getLastNode(DoublyLinkedList* list);
 
-extern void clearList(List* list);
+extern void clearList(DoublyLinkedList* list);
+
+extern void clearNode(Node* node);
 
 #endif

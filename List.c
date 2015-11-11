@@ -1,8 +1,7 @@
-#include <stdlib.h>
 #include "List.h"
 
 int main(void) {
-	List* list = createNewList();
+	DoublyLinkedList* list = createNewList();
 
 	//--------------------------------
 	int* value = malloc(sizeof(int));
@@ -22,24 +21,12 @@ int main(void) {
 
 	addItem(list, value3);
 
-	printf("\n------------ List properties --------------");
-	printf("\nFirst item @ %p", list->firstItem);
-	printf("\nLast item @ %p ", list->lastItem);
-	printf("\nSize @ %d", list->size);
-	printf("\n-------------- print() --------------------");
-	print(list);
-	printf("\n------------- Remove item @ pos 1() -----------------");
-	removeAt(list, 1);
-	printf("\n-------------- print() --------------------");
-	print(list);
-	printf("\n------------- clearList() -----------------");
-	clearList(list);
-
 	return 0;
 }
 
-List* createNewList() {
-	List* list = (List*) malloc(sizeof(List));
+DoublyLinkedList* createNewList() {
+	DoublyLinkedList* list = (DoublyLinkedList*) malloc(
+			sizeof(DoublyLinkedList));
 	list->size = 0;
 	list->firstItem = 0;
 	list->lastItem = 0;
@@ -56,7 +43,7 @@ Node* createNewNode() {
 	return node;
 }
 
-void addItem(List* list, void* object) {
+void addItem(DoublyLinkedList* list, void* object) {
 	Node* current = list->lastItem;
 
 	if (current != 0) {
@@ -65,20 +52,17 @@ void addItem(List* list, void* object) {
 		last->prevItem = current;
 		current->nextItem = last;
 		list->lastItem = last;
-
-		printf("\nAdded item @ %p (parent =%p)", last, current);
 	} else {
 		list->firstItem = createNewNode();
 		Node* first = list->firstItem;
 		list->lastItem = first;
 		first->prevItem = 0;
-		printf("\nAdded first item @ %p (parent =%p)", first, 0);
 		first->value = object;
 	}
 	list->size++;
 }
 
-Node* getAt(List* list, unsigned int pos) {
+Node* getAt(DoublyLinkedList* list, unsigned int pos) {
 
 	Node* value = 0;
 	Node* current = list->firstItem;
@@ -101,7 +85,7 @@ Node* getAt(List* list, unsigned int pos) {
 	return value;
 }
 
-void removeAt(List* list, unsigned int pos) {
+void removeAt(DoublyLinkedList* list, unsigned int pos) {
 
 	//Get the element at the position
 	Node* current = getAt(list, pos);
@@ -110,7 +94,7 @@ void removeAt(List* list, unsigned int pos) {
 		Node* parent = current->prevItem;
 		Node* children = current->nextItem;
 
-		free(current);
+		clearNode(current);
 		list->size--;
 
 		if (parent != 0) {
@@ -121,7 +105,7 @@ void removeAt(List* list, unsigned int pos) {
 	}
 }
 
-void print(List* list) {
+void print(DoublyLinkedList* list) {
 	int size = list->size;
 
 	if (size > 0) {
@@ -130,13 +114,16 @@ void print(List* list) {
 		for (i = 0; i < size; ++i) {
 			node = getAt(list, i);
 
-			printf("\nItem (%d) -> %d", i, *((int*) node->value));
+			int* value = node->value;
+
+			if(value != 0) {
+				printf("\nItem (%d) -> %d", i, *(value));
+			}
 		}
 	}
 }
 
-
-void clearList(List* list) {
+void clearList(DoublyLinkedList* list) {
 
 	//Get the second element
 	Node* current = getAt(list, 1);
@@ -144,14 +131,21 @@ void clearList(List* list) {
 	if (current != 0) {
 		Node* parent = 0;
 		while (current != 0) {
-			Node* toDelete = current->prevItem;
-			printf("\nCleared item @ %p", toDelete);
-			free(toDelete);
+			clearNode(current->prevItem);
 
 			parent = current;
 			current = parent->nextItem;
 		}
-		printf("\nCleared item @ %p", parent);
-		free(parent);
+		clearNode(parent);
 	}
+
+	list->firstItem = 0;
+	list->lastItem = 0;
+	list->size = 0;
+}
+
+void clearNode(Node* node) {
+	free(node->value);
+	free(node);
+	node = 0;
 }

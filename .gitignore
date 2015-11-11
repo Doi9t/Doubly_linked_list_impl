@@ -76,3 +76,4 @@ local.properties
 # Debug files
 *.dSYM/
 
+/Debug/
