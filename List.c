@@ -62,6 +62,32 @@ void addItem(DoublyLinkedList* list, void* object) {
 	list->size++;
 }
 
+void addAt(DoublyLinkedList* list, unsigned int pos, void* object) {
+
+	Node* current = getAt(list, pos);
+
+	if (current != 0) {
+		Node* added = createNewNode();
+		added->value = object;
+
+		Node* parent = current->prevItem;
+		Node* children = current;
+
+		if (parent != 0) {
+			added->prevItem = parent;
+			parent->nextItem = added;
+			current->prevItem = added;
+		}
+
+		if (children != 0) {
+			added->nextItem = children;
+			children->prevItem = added;
+		}
+
+		list->size++;
+	}
+}
+
 Node* getAt(DoublyLinkedList* list, unsigned int pos) {
 
 	Node* value = 0;
@@ -106,20 +132,18 @@ void removeAt(DoublyLinkedList* list, unsigned int pos) {
 }
 
 void print(DoublyLinkedList* list) {
-	int size = list->size;
 
-	if (size > 0) {
-		unsigned int i;
-		Node* node = 0;
-		for (i = 0; i < size; ++i) {
-			node = getAt(list, i);
+	Node* node = list->firstItem;
 
-			int* value = node->value;
+	while(node != 0) {
 
-			if(value != 0) {
-				printf("\nItem (%d) -> %d", i, *(value));
-			}
+		int* value = node->value;
+
+		if(value != 0) {
+			printf("\nItem -> %d (%p)", *(value), node);
 		}
+
+		node = node->nextItem;
 	}
 }
 
